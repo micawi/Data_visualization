@@ -24,11 +24,13 @@ class MainWindow(QWidget):
     OkYBtn: QPushButton;
     YDataLine: QLineEdit;
     LoadedYFileLbl: QLabel;
+    UploadFileYBtn: QPushButton;
     SelectXLbl: QLabel;
     SelectXBox: QComboBox;
     OkXBtn: QPushButton;
     XDataLine: QLineEdit;
     LoadedXFileLbl: QLabel;
+    UploadFileXBtn: QPushButton;
     XBinsLine: QLineEdit;
     PlotBtn: QPushButton;
 
@@ -91,8 +93,13 @@ class MainWindow(QWidget):
         self.LoadedYFileLbl = QLabel();
         self.LoadedYFileLbl.setText("No file loaded");
         self.LoadedYFileLbl.setFixedHeight(16);
-        self.Grid.addWidget(self.LoadedYFileLbl, 3, 0, 1, 4);
+        self.Grid.addWidget(self.LoadedYFileLbl, 3, 0);
         self.LoadedYFileLbl.hide();
+
+        self.UploadFileYBtn = QPushButton("Upload file");
+        self.UploadFileYBtn.setFixedHeight(22);
+        self.Grid.addWidget(self.UploadFileYBtn, 3, 1);
+        self.UploadFileYBtn.hide();
 
         self.SelectXLbl = QLabel();
         self.SelectXLbl.setText("Select x-data insertion method: ");
@@ -116,6 +123,10 @@ class MainWindow(QWidget):
         self.LoadedXFileLbl.setFixedHeight(28);
         self.Grid.addWidget(self.LoadedXFileLbl, 6, 0);
         self.LoadedXFileLbl.hide();
+
+        self.UploadFileXBtn = QPushButton("Upload file");
+        self.Grid.addWidget(self.UploadFileXBtn, 6, 1);
+        self.UploadFileXBtn.hide();
 
         self.XBinsLbl = QLabel();
         self.XBinsLbl.setText("No. of bins: ");
@@ -143,28 +154,34 @@ class MainWindow(QWidget):
             self.XDataLine.show();
             self.XBinsLine.hide();
             self.XBinsLbl.hide();
-            self.LoadedXFileLbl.hide(); 
+            self.LoadedXFileLbl.hide();
+            self.UploadFileXBtn.hide();
         elif(((currPlot == "Standard Plot") | (currPlot == "Logarithmic Plot")) & (currXMethod == "Load data from file")):
             self.XDataLine.hide();
             self.XBinsLine.hide();
             self.XBinsLbl.hide();
             self.LoadedXFileLbl.show();
+            self.UploadFileXBtn.show();
         elif((currPlot == "Histogram") & (currXMethod == "Insert data manually")):
             self.XDataLine.hide();
             self.XBinsLine.show();
             self.XBinsLbl.show();
             self.LoadedXFileLbl.hide();
+            self.UploadFileXBtn.hide();
         elif((currPlot == "Histogram") & (currXMethod == "Load data from file")):
             self.XDataLine.hide();
             self.XBinsLine.hide();
             self.XBinsLbl.hide();
             self.LoadedXFileLbl.show();
+            self.UploadFileXBtn.show();
     
     def yOkBtnClicked(self):
         currYMethod: str = self.SelectYBox.currentText();
         if(currYMethod == "Insert data manually"):
             self.YDataLine.show();
             self.LoadedYFileLbl.hide();
+            self.UploadFileYBtn.hide();
         else:
             self.YDataLine.hide();
             self.LoadedYFileLbl.show();
+            self.UploadFileYBtn.show();
