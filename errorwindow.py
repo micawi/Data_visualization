@@ -44,6 +44,12 @@ class ErrorWindow(QWidget):
         elif(errorCause == "No Path"):
             self.ErrorMsg = "No path was selected";
             self.ErrorLbl.setText(self.ErrorMsg);
+        elif(errorCause == "Y Value Error"):
+            self.ErrorMsg = "Invalid Y values";
+            self.ErrorLbl.setText(self.ErrorMsg);
+        elif(errorCause == "X Value Error"):
+            self.ErrorMsg = "Invalid X values";
+            self.ErrorLbl.setText(self.ErrorMsg);
         
         self.show();
     

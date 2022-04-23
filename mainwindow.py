@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QPushButton, QLineEdit
 from PyQt5.QtGui import QFont;
 from PyQt5.QtCore import Qt;
 from errorwindow import ErrorWindow;
+from plotwindow import PlotWindow;
 import os;
 
 appVersion: str = "v.1.0";
@@ -42,12 +43,15 @@ class MainWindow(QWidget):
 
     # Subwindows
     ErrWindow: ErrorWindow;
+    PlotWindow: PlotWindow;
 
     def __init__(self):
         # Window initialization with params
         super().__init__();
         self.XSize = 500; 
         self.YSize = 500;
+        self.XFilePath = "";
+        self.YFilePath = "";
         self.setFixedSize(self.XSize, self.YSize);
         self.setWindowTitle("Data visualizer " + appVersion);
         self.setFont(QFont("Arial", 10));
@@ -152,6 +156,7 @@ class MainWindow(QWidget):
         self.XBinsLine.hide();
 
         self.PlotBtn = QPushButton("PLOT DATA");
+        self.PlotBtn.clicked.connect(self.plotData);
         self.PlotBtn.setFixedHeight(50);
         self.Grid.addWidget(self.PlotBtn, 8, 0, 1, 4);
 
@@ -222,4 +227,44 @@ class MainWindow(QWidget):
             else:
                 self.ErrWindow = ErrorWindow("Unknown File");  
         except:
-            self.ErrWindow = ErrorWindow("No Path");                                     
+            self.ErrWindow = ErrorWindow("No Path");
+
+    # Plot data with given inputs, new window 
+    def plotData(self): 
+        plotType: str = self.PlotTypeBox.currentText();
+
+        manualStr: str = "Insert data manually";               
+        yDataManually: bool = (self.SelectYBox.currentText() == manualStr);
+        xDataManually: bool = (self.SelectXBox.currentText() == manualStr);
+
+        yFilePath: str = self.YFilePath;
+        xFilePath: str = self.XFilePath;
+
+        yDataValues: list;
+        xDataValues: any;
+
+        try:
+            rawYDataValues: str = self.YDataLine.text();
+            if(rawYDataValues.__contains__("[") == False):
+                rawYDataValues = "[" + rawYDataValues + "]";
+            yDataValues = eval(rawYDataValues);
+        except:
+            self.ErrWindow = ErrorWindow("Y Value Error");
+            return;
+        if(plotType == "Histogram"):
+            try:
+                xDataValues: int = int(self.XBinsLine.text());
+            except:
+                self.ErrWindow = ErrorWindow("X Value Error");
+                return;
+        else:
+            try:
+                rawXDataValues: str = self.XDataLine.text();
+                if(rawXDataValues.__contains__("[") == False):
+                    rawXDataValues = "[" + rawXDataValues + "]";
+                xDataValues: list = eval(rawXDataValues);
+            except:
+                self.ErrWindow = ErrorWindow("X Value Error");
+                return;
+
+        self.PlotWindow = PlotWindow(plotType, yDataManually, xDataManually, yFilePath, xFilePath, yDataValues, xDataValues);
