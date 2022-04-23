@@ -1,10 +1,16 @@
-from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QPushButton, QLineEdit, QComboBox, QFrame;
+from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QPushButton, QLineEdit, QComboBox, QFrame, QFileDialog;
 from PyQt5.QtGui import QFont;
 from PyQt5.QtCore import Qt;
+from errorwindow import ErrorWindow;
+import os;
 
 appVersion: str = "v.1.0";
 
 class MainWindow(QWidget):
+    # Properties
+    XFilePath: str;
+    YFilePath: str;
+
     # Size properties
     XSize: int;
     YSize: int;
@@ -33,6 +39,9 @@ class MainWindow(QWidget):
     UploadFileXBtn: QPushButton;
     XBinsLine: QLineEdit;
     PlotBtn: QPushButton;
+
+    # Subwindows
+    ErrWindow: ErrorWindow;
 
     def __init__(self):
         # Window initialization with params
@@ -98,6 +107,7 @@ class MainWindow(QWidget):
 
         self.UploadFileYBtn = QPushButton("Upload file");
         self.UploadFileYBtn.setFixedHeight(22);
+        self.UploadFileYBtn.clicked.connect(self.loadFile);
         self.Grid.addWidget(self.UploadFileYBtn, 3, 1);
         self.UploadFileYBtn.hide();
 
@@ -125,6 +135,7 @@ class MainWindow(QWidget):
         self.LoadedXFileLbl.hide();
 
         self.UploadFileXBtn = QPushButton("Upload file");
+        self.UploadFileXBtn.clicked.connect(self.loadFile);
         self.Grid.addWidget(self.UploadFileXBtn, 6, 1);
         self.UploadFileXBtn.hide();
 
@@ -146,7 +157,7 @@ class MainWindow(QWidget):
 
         self.show();
 
-    # Ensuring correct elements displayed
+    # Ensuring elements correctly displayed
     def plotTypeBtnClicked(self):
         currPlot: str = self.PlotTypeBox.currentText();
         currXMethod: str = self.SelectXBox.currentText();
@@ -185,3 +196,30 @@ class MainWindow(QWidget):
             self.YDataLine.hide();
             self.LoadedYFileLbl.show();
             self.UploadFileYBtn.show();
+
+    # Loading data from file    
+    def loadFile(self):
+        sender = self.sender();
+        fileType: str;
+        if(sender == self.UploadFileYBtn):
+            fileType = "Y";
+        elif(sender == self.UploadFileXBtn):
+            fileType = "X";
+        
+        filePath: str = str(QFileDialog.getOpenFileName(self)[0]);
+        try:
+            if(os.path.exists(filePath)):
+                if(fileType == "Y"):
+                    self.YFilePath = filePath;
+                    splitPath: str = filePath.split("/");
+                    fileName: str = splitPath[len(splitPath) - 1];
+                    self.LoadedYFileLbl.setText(fileName);
+                elif(fileType == "X"):
+                    self.XFilePath = filePath;
+                    splitPath: str = filePath.split("/");
+                    fileName: str = splitPath[len(splitPath) - 1];
+                    self.LoadedXFileLbl.setText(fileName);
+            else:
+                self.ErrWindow = ErrorWindow("Unknown File");  
+        except:
+            self.ErrWindow = ErrorWindow("No Path");                                     
