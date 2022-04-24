@@ -50,13 +50,23 @@ class PlotWindow(QWidget):
                     self.XDataValues = int(f.read());
         
         if(plotType == "Logarithmic Plot"):
-            for value in self.YDataValues:
-                value = log10(value);
+            for i in range(0, len(self.YDataValues)):
+                self.YDataValues[i] = log10(self.YDataValues[i]);
     
-        if((plotType == "Standard Plot") | (plotType == "Logarithmic Plot")):
+        if(plotType == "Standard Plot"):
             plot.plot(self.XDataValues, self.YDataValues);
-            
+            plot.ylabel("Value of y");
+            plot.xlabel("Value of x");
+            plot.title("Standard plot");
+        elif(plotType == "Logarithmic Plot"):
+            plot.plot(self.XDataValues, self.YDataValues);
+            plot.ylabel("Value of log10(y)");
+            plot.xlabel("Value of x");   
+            plot.title("Logarithmic plot"); 
         else:
             plot.hist(self.YDataValues, self.XDataValues);
+            plot.ylabel("Quantity of y-values in bins");
+            plot.xlabel("Value of y");
+            plot.title("Histogram");
         
         plot.show();
