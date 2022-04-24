@@ -253,7 +253,10 @@ class MainWindow(QWidget):
             return;
         if(plotType == "Histogram"):
             try:
-                xDataValues: int = int(self.XBinsLine.text());
+                if(xDataManually):
+                    xDataValues: int = int(self.XBinsLine.text());
+                else:
+                    xDataValues: int = [];
             except:
                 self.ErrWindow = ErrorWindow("X Value Error");
                 return;
